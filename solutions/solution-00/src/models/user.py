@@ -11,8 +11,8 @@ class User(db.Model):
     email = Column(String(120), unique=True, nullable=False)
     password = Column(String(128), nullable=False)  # Assurez-vous de stocker de manière sécurisée
     is_admin = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, onupdate=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.now)
+    updated_at = Column(DateTime, onupdate=datetime.now)
 
     def __init__(self, email: str, password: str, is_admin: bool = False, **kwargs) -> None:
         super().__init__(**kwargs)
@@ -64,3 +64,7 @@ class User(db.Model):
     @staticmethod
     def get_by_id(user_id: str) -> "User | None":
         return User.query.get(user_id)
+    
+    @staticmethod
+    def get_all() -> list["User"]:
+        return User.query.all()
