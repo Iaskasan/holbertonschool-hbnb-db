@@ -1,5 +1,6 @@
 import unittest
-from app import app, db, User
+app = __import__('src.app').app
+db = __import__('src.app').db
 
 class UserModelTestCase(unittest.TestCase):
     def setUp(self):
