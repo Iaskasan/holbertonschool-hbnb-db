@@ -2,10 +2,14 @@ from flask import Flask
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_bcrypt import Bcrypt
+from flask_jwt_extended import JWTManager
 
 cors = CORS()
 db = SQLAlchemy()
 migrate = Migrate()
+bcrypt = Bcrypt()
+jwt = JWTManager()
 
 def create_app(config_class=None) -> Flask:
     app = Flask(__name__)
@@ -17,13 +21,15 @@ def create_app(config_class=None) -> Flask:
     else:
         app.config.from_object("src.config.DevelopmentConfig")
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///development.db'  # or use another database URI
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///development.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['USE_DATABASE'] = True  # This can be changed based on your needs
+    app.config['USE_DATABASE'] = True
 
     db.init_app(app)
     migrate.init_app(app, db)
     cors.init_app(app, resources={r"/api/*": {"origins": "*"}})
+    bcrypt.init_app(app)
+    jwt.init_app(app)
 
     from src.routes.users import users_bp
     from src.routes.countries import countries_bp
@@ -31,6 +37,7 @@ def create_app(config_class=None) -> Flask:
     from src.routes.places import places_bp
     from src.routes.amenities import amenities_bp
     from src.routes.reviews import reviews_bp
+    from src.routes.login import login_bp
 
     app.register_blueprint(users_bp)
     app.register_blueprint(countries_bp)
@@ -38,6 +45,7 @@ def create_app(config_class=None) -> Flask:
     app.register_blueprint(places_bp)
     app.register_blueprint(reviews_bp)
     app.register_blueprint(amenities_bp)
+    app.register_blueprint(login_bp)
 
     @app.errorhandler(404)
     def not_found_error(error):
