@@ -1,30 +1,21 @@
-from models import User  # Adjust the import based on your project structure
-from app import db, app
+from src.persistence import db  # Adjust the import based on your project structure
+from src.models import User  # Adjust the import based on your project structure
 
 class DataManager:
     def __init__(self):
-        self.use_database = app.config.get('USE_DATABASE', False)
+        self.repository = db
 
     def save_user(self, user):
-        if self.use_database:
-            db.session.add(user)
-            db.session.commit()
-        else:
-            self.save_user_to_file(user)
+        self.repository.save(user)
 
     def get_user(self, user_id):
-        if self.use_database:
-            return User.query.get(user_id)
-        else:
-            return self.get_user_from_file(user_id)
+        return self.repository.get("User", user_id)
 
-    def save_user_to_file(self, user):
-        # Implement the logic to save user to file
-        pass
+    def update_user(self, user):
+        return self.repository.update(user)
 
-    def get_user_from_file(self, user_id):
-        # Implement the logic to get user from file
-        pass
+    def delete_user(self, user):
+        return self.repository.delete(user)
 
     # Implement additional methods for other CRUD operations and models
 

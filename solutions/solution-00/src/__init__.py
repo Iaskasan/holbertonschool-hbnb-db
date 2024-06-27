@@ -1,21 +1,24 @@
 from flask import Flask
 from flask_cors import CORS
-from app import db
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+
 
 cors = CORS()
+db = SQLAlchemy()
 
 
 def create_app(config_class=None) -> Flask:
     app = Flask(__name__)
-
-    app.url_map.strict_slashes = False
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///development.db'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     if config_class:
         app.config.from_object(config_class)
     else:
         app.config.from_object("src.config.DevelopmentConfig")
 
-    # db.init_app(app)
+    db.init_app(app)
     cors.init_app(app, resources={r"/api/*": {"origins": "*"}})
 
     from src.routes.users import users_bp

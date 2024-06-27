@@ -34,7 +34,7 @@ class MemoryRepository(Repository):
         cls = obj.__class__.__name__.lower()
 
         if obj not in self.__data[cls]:
-            # print(f"Saving {obj}, {cls}")
+            print(f"Saving {obj}, {cls}")
             self.__data[cls].append(obj)
 
         return obj

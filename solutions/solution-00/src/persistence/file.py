@@ -74,16 +74,12 @@ class FileRepository(Repository):
 
                 self.save(data=instance, save_to_file=False)
 
-    def save(self, data: Base, save_to_file=True):
-        model: str = data.__class__.__name__.lower()
-
-        if model not in self.__data:
-            self.__data[model] = []
-
-        self.__data[model].append(data)
-
-        if save_to_file:
-            self._save_to_file()
+    def save(self, obj: Base):
+        cls = obj.__class__.__name__.lower()
+        if cls not in self.__data:
+            self.__data[cls] = []
+        self.__data[cls].append(obj)
+        self._save_to_file()
 
     def update(self, obj: Base):
         cls = obj.__class__.__name__.lower()
